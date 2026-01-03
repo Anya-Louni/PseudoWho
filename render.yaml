@@ -1,23 +1,4 @@
-services:
-  # Backend API
-  - type: web
-    name: pseudoqui-backend
-    env: python
-    buildCommand: "cd backend && pip install -r requirements.txt"
-    startCommand: "cd backend && python run.py"
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: PORT
-        value: 5000
-
-  # Frontend
-  - type: web
-    name: pseudoqui-frontend
-    env: static
-    buildCommand: "cd frontend && npm install && npm run build"
-    staticPublishPath: ./frontend/build
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+# Railway.app will auto-detect from these files:
+# - backend/requirements.txt for Python
+# - frontend/package.json for Node.js
+# Just connect your GitHub repo to Railway and it will deploy both automatically
