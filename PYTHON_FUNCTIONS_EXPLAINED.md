@@ -1,4 +1,4 @@
-# Python Functions Guide for High School Students
+# Python Functions Guide
 
 This document explains every Python function used in the PseudoQui project in simple terms.
 
