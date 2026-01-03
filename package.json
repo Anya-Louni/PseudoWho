@@ -1,7 +1,0 @@
-{
-  "name": "pseudoqui-backend",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "cd backend && python3 run.py"
-  }
-}
