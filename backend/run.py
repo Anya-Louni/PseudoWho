@@ -16,9 +16,12 @@ if __name__ == '__main__':
     # Create data directory if it doesn't exist
     os.makedirs('data', exist_ok=True)
     
+    # Get port from environment variable (for Render/Heroku) or default to 5000
+    port = int(os.environ.get('PORT', 5000))
+    
     # Run the Flask app
     print("Starting PseudoQui Backend Server...")
-    print("API available at: http://localhost:5000")
+    print(f"API available at: http://0.0.0.0:{port}")
     print("Press Ctrl+C to stop the server\n")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=port)
