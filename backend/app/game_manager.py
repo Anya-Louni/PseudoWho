@@ -50,14 +50,16 @@ class GameManager:
             data_file: Path to save/load tree data
             history_file: Path to save/load game history
         """
-        self.data_file = data_file
-        self.history_file = history_file
+        # Ensure absolute paths for deployment
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.data_file = os.path.join(base_dir, data_file)
+        self.history_file = os.path.join(base_dir, history_file)
         self.tree = BinaryTree()
         self.current_session = GameSession()
         self.game_history: List[GameSession] = []
         
         # Create data directory if it doesn't exist
-        os.makedirs(os.path.dirname(data_file) if os.path.dirname(data_file) else ".", exist_ok=True)
+        os.makedirs(os.path.dirname(self.data_file), exist_ok=True)
         
         # Load existing data
         self.load_tree()
