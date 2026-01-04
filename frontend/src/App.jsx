@@ -19,8 +19,7 @@ function App() {
   };
 
   const handleQuitClick = () => {
-    reset();
-    setCurrentScreen('menu');
+    window.close();
   };
 
   const handleBackToMenu = () => {
@@ -34,7 +33,7 @@ function App() {
         <MenuScreen
           onPlayClick={handlePlayClick}
           onStatsClick={handleStatsClick}
-          onQuitClick={() => {}}
+          onQuitClick={handleQuitClick}
         />
       )}
       {currentScreen === 'game' && <GameScreen />}
