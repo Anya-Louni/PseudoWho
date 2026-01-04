@@ -47,86 +47,103 @@ html, body {
   min-height: 100vh;
 }
 
-/* Retro Button Style */
+/* Retro Pixel Art Button Styles */
 .retro-btn {
   font-family: 'Press Start 2P', cursive;
-  font-size: 0.8rem;
-  padding: 20px 40px;
-  border: none;
-  background: var(--primary-pink);
-  color: white;
+  font-size: 0.9rem;
+  padding: 18px 35px;
+  border: 3px solid;
   cursor: pointer;
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
-  border-top: 4px solid #ff99d0;
-  border-left: 4px solid #ff99d0;
-  border-right: 4px solid #8b0050;
-  border-bottom: 8px solid #8b0050;
-  box-shadow: 
-    inset 1px 1px 0px rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0px rgba(0, 0, 0, 0.5);
-  transition: all 0.05s ease;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   position: relative;
+  transition: all 0.1s ease;
+  image-rendering: pixelated;
+  border-radius: 16px;
+  
+  /* Bold 3D shadow effect */
+  box-shadow: 
+    0 8px 0 0 rgba(0,0,0,0.6),
+    0 10px 8px 0 rgba(0,0,0,0.3);
 }
 
 .retro-btn:hover {
-  background: #ff85c1;
-  border-top-color: #ffb3e0;
-  border-right-color: #6b0040;
-  border-bottom-color: #6b0040;
+  transform: translateY(-3px);
+  box-shadow: 
+    0 11px 0 0 rgba(0,0,0,0.6),
+    0 13px 10px 0 rgba(0,0,0,0.3);
 }
 
 .retro-btn:active {
-  border-top: 1px solid #8b0050;
-  border-left: 1px solid #8b0050;
-  border-right: 6px solid #8b0050;
-  border-bottom: 4px solid #8b0050;
+  transform: translateY(4px);
   box-shadow: 
-    inset 1px 1px 0px rgba(0, 0, 0, 0.3),
-    inset -1px -1px 0px rgba(255, 255, 255, 0.2);
-  transform: translateY(2px);
+    0 4px 0 0 rgba(0,0,0,0.6),
+    0 6px 4px 0 rgba(0,0,0,0.3);
 }
 
+/* Pink Play Button */
 .btn-primary {
-  background: var(--primary-pink);
-  border-color: var(--dark-pink);
-  border-top: 4px solid #ff99d0;
-  border-left: 4px solid #ff99d0;
-  border-right: 4px solid #8b0050;
-  border-bottom: 8px solid #8b0050;
+  background: #ff85d7;
+  color: white;
+  border-color: #3d1033;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.3);
 }
 
-.btn-primary:hover {
-  background: #ff85c1;
-}
-
+/* Orange/Red Menu Button */
 .btn-secondary {
-  background: var(--accent-purple);
-  border-color: #6a0572;
-  border-top: 4px solid #b366ff;
-  border-left: 4px solid #b366ff;
-  border-right: 4px solid #4a0050;
-  border-bottom: 8px solid #4a0050;
+  background: #ff8c42;
+  color: white;
+  border-color: #3d1800;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.3);
 }
 
-.btn-secondary:hover {
-  background: #b366ff;
-}
-
+/* Gray Exit/Quit Button */
 .btn-tertiary {
-  background: var(--accent-yellow);
-  color: var(--text-dark);
-  border-color: #cc9800;
-  border-top: 4px solid #ffed4e;
-  border-left: 4px solid #ffed4e;
-  border-right: 4px solid #997300;
-  border-bottom: 8px solid #997300;
+  background: #a8a8a8;
+  color: #2a2a2a;
+  border-color: #2a2a2a;
+  text-shadow: 0 2px 0 rgba(255,255,255,0.2);
 }
 
-.btn-tertiary:hover {
-  background: #ffed4e;
+/* Green Yes Button */
+.btn-success,
+.btn-yes {
+  background: #7bed9f;
+  color: white;
+  border-color: #0a3d1f;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.3);
 }
+
+/* Blue Options Button */
+.btn-info {
+  background: #5dade2;
+  color: white;
+  border-color: #0a2e4d;
+  text-shadow: 0 2px 0 rgba(200,230,255,0.4);
+}
+
+/* Red No Button */
+.btn-no,
+.btn-danger {
+  background: #ff6b6b;
+  color: white;
+  border-color: #3d0000;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.3);
+}
+
+/* Round buttons for icons */
+.btn-round {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+
 
 /* Menu Screen - Full Screen */
 .menu-container {
@@ -341,67 +358,9 @@ html, body {
   letter-spacing: 2px;
 }
 
-.btn-yes {
-  background: #00d084;
-  border-top: 4px solid #33ff99;
-  border-left: 4px solid #33ff99;
-  border-right: 4px solid #007744;
-  border-bottom: 8px solid #007744;
-  box-shadow: 
-    inset 1px 1px 0px rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0px rgba(0, 0, 0, 0.5);
-  color: white;
-}
 
-.btn-yes:hover {
-  background: #00ff99;
-  border-top: 4px solid #66ffbb;
-  border-left: 4px solid #66ffbb;
-  border-right: 4px solid #005533;
-  border-bottom: 4px solid #005533;
-}
 
-.btn-yes:active {
-  border-top: 1px solid #007744;
-  border-left: 1px solid #007744;
-  border-right: 4px solid #007744;
-  border-bottom: 4px solid #007744;
-  box-shadow: 
-    inset 1px 1px 0px rgba(0, 0, 0, 0.3),
-    inset -1px -1px 0px rgba(255, 255, 255, 0.2);
-  transform: translateY(2px);
-}
-
-.btn-no {
-  background: #ff6b6b;
-  border-top: 4px solid #ff99b5;
-  border-left: 4px solid #ff99b5;
-  border-right: 4px solid #cc0033;
-  border-bottom: 8px solid #cc0033;
-  box-shadow: 
-    inset 1px 1px 0px rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0px rgba(0, 0, 0, 0.5);
-  color: white;
-}
-
-.btn-no:hover {
-  background: #ff8888;
-  border-top: 4px solid #ffccdd;
-  border-left: 4px solid #ffccdd;
-  border-right: 4px solid #990022;
-  border-bottom: 4px solid #990022;
-}
-
-.btn-no:active {
-  border-top: 1px solid #cc0033;
-  border-left: 1px solid #cc0033;
-  border-right: 4px solid #cc0033;
-  border-bottom: 4px solid #cc0033;
-  box-shadow: 
-    inset 1px 1px 0px rgba(0, 0, 0, 0.3),
-    inset -1px -1px 0px rgba(255, 255, 255, 0.2);
-  transform: translateY(2px);
-}
+/* Question container styles */
 
 .btn svg {
   width: 28px;

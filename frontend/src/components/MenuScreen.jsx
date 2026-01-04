@@ -21,7 +21,7 @@ export const MenuScreen = ({ onPlayClick, onStatsClick, onQuitClick }) => {
           <button onClick={onStatsClick} className="retro-btn btn-secondary">
             <FiBarChart2 /> View Statistics
           </button>
-          <button onClick={onQuitClick} className="retro-btn btn-danger">
+          <button onClick={onQuitClick} className="retro-btn btn-no">
             <FiLogOut /> Quit
           </button>
         </div>

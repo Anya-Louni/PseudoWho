@@ -6,7 +6,8 @@ export const ResultsScreen = ({
   wasCorrect, 
   questionsAsked, 
   statistics,
-  onPlayAgain 
+  onPlayAgain,
+  onReturnToMenu
 }) => {
   const [showTree, setShowTree] = useState(false);
   const [treeDisplay, setTreeDisplay] = useState('');
@@ -18,20 +19,22 @@ export const ResultsScreen = ({
         const response = await fetch('http://localhost:5000/api/tree/path');
         const data = await response.json();
         if (data.path) {
-          let treeStructure = 'Decision Tree Path:\n\n';
+          let treeStructure = 'Decision Tree Path (Your Journey):\n\n';
           
           data.path.forEach((step, index) => {
             if (step.answer === 'Guess') {
               // Final guess node
               treeStructure += `    └─[GUESS] ${step.question}\n`;
             } else {
-              // Question nodes with branches
+              // Question nodes with BOTH branches
               const indent = '    '.repeat(index);
               const connector = index === 0 ? '○' : '├─';
-              const branch = step.answer === 'Yes' ? 'YES─┐' : 'NO──┘';
+              const chosenBranch = step.answer === 'Yes' ? 'YES' : 'NO';
+              const otherBranch = step.answer === 'Yes' ? 'NO' : 'YES';
               
               treeStructure += `${indent}${connector} [Q${index + 1}] ${step.question}\n`;
-              treeStructure += `${indent}    └─> ${branch}\n`;
+              treeStructure += `${indent}    ├─> ${chosenBranch} ✓ (You chose this)\n`;
+              treeStructure += `${indent}    └─> ${otherBranch} (Not taken)\n`;
               
               if (index < data.path.length - 2) {
                 treeStructure += `${indent}        |\n`;
@@ -117,78 +120,43 @@ export const ResultsScreen = ({
             <p className="stat-label">Score</p>
             <p className="stat-value">{score}</p>
           </div>
-          {statistics && statistics.tree && (
-            <div className="stat-box">
-              <p className="stat-label">Animals Known</p>
-              <p className="stat-value">{statistics.tree.leaf_count}</p>
-            </div>
-          )}
         </div>
 
-        {statistics && statistics.games && (
-          <div className="game-statistics">
-            <h3 className="stats-title">Game Statistics</h3>
-            <div className="stats-grid">
-              <div className="stat-item">
-                <p className="stat-label">Total Games</p>
-                <p className="stat-value">{statistics.games.total}</p>
-              </div>
-              <div className="stat-item">
-                <p className="stat-label">Win Rate</p>
-                <p className="stat-value">{statistics.games.success_rate.toFixed(1)}%</p>
-              </div>
-              <div className="stat-item">
-                <p className="stat-label">Correct Guesses</p>
-                <p className="stat-value">{statistics.games.correct_guesses}</p>
-              </div>
-              <div className="stat-item">
-                <p className="stat-label">Wrong Guesses</p>
-                <p className="stat-value">{statistics.games.incorrect_guesses}</p>
-              </div>
-              <div className="stat-item">
-                <p className="stat-label">Avg Questions</p>
-                <p className="stat-value">{statistics.games.average_questions_per_game}</p>
-              </div>
-              <div className="stat-item">
-                <p className="stat-label">Tree Height</p>
-                <p className="stat-value">{statistics.tree.height}</p>
-              </div>
-            </div>
+        <button 
+          className="retro-btn btn-info"
+          onClick={() => setShowTree(!showTree)}
+          style={{ marginBottom: '20px', width: '100%' }}
+        >
+          {showTree ? 'Hide Decision Path' : 'Show Decision Path'}
+        </button>
+
+        {showTree && (
+          <div className="tree-display-results">
+            <h3>Your Decision Path</h3>
+            <pre className="tree-text">
+              {treeDisplay || 'Loading tree...'}
+            </pre>
           </div>
-        )}
-
-        {statistics && (
-          <>
-            <button 
-              className="retro-btn toggle-tree-btn"
-              onClick={() => setShowTree(!showTree)}
-            >
-              {showTree ? 'Hide Decision Path' : 'Show Decision Path'}
-            </button>
-
-            {showTree && (
-              <div className="tree-display-results">
-                <h3>Current Tree Structure</h3>
-                <pre className="tree-text">
-                  {treeDisplay || 'Loading tree...'}
-                </pre>
-              </div>
-            )}
-          </>
         )}
 
         <div className="results-actions">
           <button 
-            className="retro-btn btn-primary"
+            className="retro-btn btn-tertiary"
             onClick={handleSaveAsJSON}
           >
             Save as JSON
           </button>
           <button 
-            className="retro-btn btn-secondary"
+            className="retro-btn btn-primary"
             onClick={onPlayAgain}
           >
             Play Again
+          </button>
+          <button 
+            className="retro-btn btn-secondary"
+            onClick={onReturnToMenu}
+          >
+            Return to Menu
           </button>
         </div>
 

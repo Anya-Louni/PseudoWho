@@ -5,7 +5,7 @@ import { FiCheck, FiX, FiLoader } from 'react-icons/fi';
 import { ResultsScreen } from './ResultsScreen';
 import { LearnAnimalForm } from './LearnAnimalForm';
 
-export const GameScreen = () => {
+export const GameScreen = ({ onReturnToMenu }) => {
   const {
     currentQuestion,
     questionsAsked,
@@ -44,6 +44,7 @@ export const GameScreen = () => {
   }, [wasCorrect, showLearning]);
 
   const handleAnswer = async (answer) => {
+    console.log(`>>> FRONTEND SENDING ANSWER: '${answer}' <<<`);
     await answerQuestion(answer);
   };
 
@@ -106,6 +107,7 @@ export const GameScreen = () => {
         questionsAsked={questionsAsked}
         statistics={statistics}
         onPlayAgain={handlePlayAgain}
+        onReturnToMenu={onReturnToMenu}
       />
     );
   }
@@ -138,14 +140,14 @@ export const GameScreen = () => {
           <div className="answer-buttons">
             <button
               onClick={handleGuessCorrect}
-              className="btn btn-yes"
+              className="retro-btn btn-yes"
               disabled={loading}
             >
               <FiCheck /> Yes!
             </button>
             <button
               onClick={handleGuessWrong}
-              className="btn btn-no"
+              className="retro-btn btn-no"
               disabled={loading}
             >
               <FiX /> No
@@ -166,14 +168,14 @@ export const GameScreen = () => {
         <div className="answer-buttons">
           <button
             onClick={() => handleAnswer('yes')}
-            className="btn btn-yes"
+            className="retro-btn btn-yes"
             disabled={loading}
           >
             Yes
           </button>
           <button
             onClick={() => handleAnswer('no')}
-            className="btn btn-no"
+            className="retro-btn btn-no"
             disabled={loading}
           >
             No

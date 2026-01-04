@@ -36,7 +36,7 @@ function App() {
           onQuitClick={handleQuitClick}
         />
       )}
-      {currentScreen === 'game' && <GameScreen />}
+      {currentScreen === 'game' && <GameScreen onReturnToMenu={handleBackToMenu} />}
       {currentScreen === 'stats' && (
         <div style={{ width: '100%' }}>
           <StatisticsScreen />
