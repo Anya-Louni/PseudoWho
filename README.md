@@ -1,6 +1,16 @@
 # PseudoQui - Animal Guessing Game
 
-An intelligent binary tree-based animal guessing game with machine learning capabilities.
+An intelligent binary tree-based animal guessing game with machine learning capabilities and real-time learning system.
+
+## 🌟 Key Features
+
+- **Binary Decision Tree** - O(log n) average-case question traversal
+- **Self-Learning AI** - Dynamically adds new animals to the tree
+- **Pattern Recognition** - Database tracks yes/no patterns for each animal
+- **Real-Time Statistics** - Win rate, tree growth, average questions
+- **Retro Pixel Art UI** - Consistent button design with 3px borders
+- **Decision Path Export** - Save game data and tree structure as JSON
+- **Responsive Design** - Works on desktop and mobile browsers
 
 ## 📋 Quick Start
 
@@ -108,30 +118,38 @@ You can now view pseudoqui-frontend in the browser.
 
 ---
 
-## 🎮 How to Use
+## 🎮 How to Play
 
 1. **Start the Game**
-   - Click "Start Game" on the menu screen
+   - Click "Play Game" button from the menu
 
 2. **Answer Questions**
    - Think of an animal (don't tell the computer!)
-   - Answer Yes/No to each question
-   - The AI will navigate its decision tree
+   - Click "Yes" or "No" to each question
+   - The AI navigates its binary decision tree
 
 3. **Final Guess**
-   - The AI will make a guess
-   - Click "Yes" if correct, "No" if wrong
+   - The AI makes a guess: "Is it a [animal]?"
+   - Click "Yes!" if correct
+   - Click "No!" if wrong
 
-4. **Teach the AI (if wrong)**
+4. **Teach the AI (when wrong)**
    - Enter the correct animal name
-   - Provide a question that distinguishes your animal
-   - Select Yes/No for your animal
-   - The AI learns and adds your animal to its tree!
+   - Provide a discriminating question
+   - Select Yes/No answer for your animal
+   - The tree grows dynamically with new knowledge!
 
-5. **View Statistics**
-   - See game history
-   - View decision tree structure
-   - Analyze performance metrics
+5. **Game Results**
+   - View your score and questions asked
+   - See decision path (both branches)
+   - Save game data as JSON
+   - Play again or return to menu
+
+6. **View Statistics** (from menu)
+   - Game history and win rate
+   - Tree structure and height
+   - Animals known (leaf count)
+   - Average questions per game
 
 ---
 
@@ -295,41 +313,99 @@ PORT=3001 npm start
         /          \              /          \
       YES          NO            YES          NO
        |            |             |            |
-   Whale/Dolphin  Dog/Cat     Eagle/Parrot  Snake/Fish
+  Is it huge?   Has 4 legs?   Can it fly?  Has scales?
+   /    \        /      \       /     \      /      \
+Whale Dolphin  Dog    Bear   Eagle  Parrot Snake  Fish
 ```
+
+**Tree Properties:**
+- Each internal node = question
+- Each leaf node = animal
+- Left child = "Yes" answer
+- Right child = "No" answer
+- Initial tree: 25 animals, balanced structure
 
 ### Learning Algorithm
 
 When the AI guesses wrong:
-1. User enters correct animal (e.g., "Kangaroo")
-2. User provides discriminating question (e.g., "Does it hop?")
-3. User answers Yes/No for their animal
-4. AI creates new branch:
+
+1. **User provides feedback:**
+   - Correct animal (e.g., "Kangaroo")
+   - Discriminating question (e.g., "Does it hop?")
+   - Answer for their animal (Yes/No)
+
+2. **Tree modification:**
    ```
    Before:
-   ... → Bear
+   ... → Bear (leaf)
    
    After:
-   ... → Does it hop?
-          ├─ Yes → Kangaroo (NEW)
-          └─ No → Bear
+   ... → Does it hop? (new internal node)
+          ├─ Yes → Kangaroo (new leaf)
+          └─ No → Bear (old leaf moved)
    ```
 
-5. Tree structure preserved, new animal permanently added
+3. **Database update:**
+   - Calculate yes/no percentage from game path
+   - Add new animal to database with pattern
+   - Tree grows permanently!
 
-### Time Complexity
+4. **Pattern learning:**
+   ```python
+   # Track which question patterns lead to which animals
+   yes_count = sum(answer for _, answer in game_history)
+   yes_percentage = (yes_count / total_questions) * 100
+   
+   # Store pattern for future prediction
+   database[animal] = yes_percentage
+   ```
 
-- **Start Game:** O(1)
-- **Answer Question:** O(1)
-- **Complete Game:** O(log n) average, O(n) worst
-- **Learn Animal:** O(1) insertion
-- **Get Statistics:** O(n) full traversal
+### Algorithm Complexity
 
-### Space Complexity
+**Time Complexity:**
+- Start Game: O(1)
+- Answer Question: O(1) per answer
+- Complete Game: O(h) where h = tree height
+  - Balanced tree: O(log n)
+  - Worst case: O(n)
+- Learn Animal: O(1) insertion + O(1) database update
+- Get Statistics: O(n) full tree traversal
+- Update Pattern: O(1)
 
-- **Tree Storage:** O(n) where n = number of animals
-- **Game History:** O(h) where h = tree height
-- **Total:** O(n + h) ≈ O(n)
+**Space Complexity:**
+- Tree Storage: O(n) where n = number of animals
+- Game History: O(h) where h = tree height per game
+- Database: O(n) for animal patterns
+- Total: O(n + h) ≈ O(n)
+
+**Tree Balance:**
+- Initial: Perfectly balanced (h = log₂(25) ≈ 5)
+- After learning: May become unbalanced
+- Trade-off: Simplicity vs. optimal balance
+
+### AI Learning System
+
+**How patterns improve predictions:**
+
+```python
+def update_animal_success(self, animal: str, was_correct: bool):
+    """Update database when game completes"""
+    # Calculate path pattern (yes/no ratio)
+    yes_count = sum(1 for _, answer in self.game_history if answer)
+    path_percentage = (yes_count / len(self.game_history)) * 100
+    
+    if was_correct:
+        # Move animal's percentage toward actual path
+        current = animal_data['yes_percentage']
+        new = current * 0.9 + path_percentage * 0.1  # 10% learning rate
+        animal_data['yes_percentage'] = new
+```
+
+**Benefits:**
+- Database learns which question patterns lead to which animals
+- Improves over time with more games
+- Helps analytics and future ML features
+- Tree structure remains source of truth
 
 ---
 

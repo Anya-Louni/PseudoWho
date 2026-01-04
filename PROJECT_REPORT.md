@@ -1,11 +1,12 @@
 # PseudoQui Project Report
 
-**Animal Guessing Game with Machine Learning**
+**Animal Guessing Game with Machine Learning & Pattern Recognition**
 
 **Course:** Data Structures and Algorithms  
-**Project Type:** Binary Tree Implementation with Learning Mechanism  
+**Project Type:** Binary Tree Implementation with Dynamic Learning  
 **Date:** January 2026  
-**Technologies:** Python 3.8+, Flask, React 18, Binary Tree Data Structure
+**Technologies:** Python 3.11, Flask, React 18, Binary Tree, Pattern Recognition Database  
+**Repository:** https://github.com/Anya-Louni/PseudoWho
 
 ---
 
