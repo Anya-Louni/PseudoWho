@@ -287,7 +287,7 @@ class BinaryTree:
     def get_guess(self) -> str:
         """
         Get the current guess (animal at leaf node)
-        Uses percentage-based selection from the animals database if available
+        Always returns the animal at the current leaf - the tree structure is truth
         
         Returns:
             The animal name the tree guessed
@@ -295,75 +295,8 @@ class BinaryTree:
         if not self.current_node or not self.current_node.is_leaf:
             return ""
         
-        # Try to use percentage-based selection if database exists
-        best_animal = self._get_best_animal_by_percentage()
-        if best_animal:
-            return best_animal
-        
-        # Fall back to the node's animal if no database or no match
+        # The tree path determines the guess - always use the leaf node's animal
         return self.current_node.data
-    
-    def _get_best_animal_by_percentage(self) -> Optional[str]:
-        """
-        Find the animal with the highest percentage match based on yes/no pattern
-        
-        Returns:
-            The best matching animal name, or None if no database available
-        """
-        import json
-        import os
-        
-        # Try to load the animals database
-        animals_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'animals.json')
-        
-        if not os.path.exists(animals_path):
-            return None
-        
-        try:
-            with open(animals_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                animals = data.get('animals', [])
-        except (json.JSONDecodeError, IOError):
-            return None
-        
-        if not animals:
-            return None
-        
-        # Calculate yes/no counts from game history
-        yes_count = sum(1 for _, answer in self.game_history if answer)
-        total_questions = len(self.game_history)
-        
-        # If no questions asked yet, use the default leaf animal
-        if total_questions == 0:
-            return None
-        
-        yes_percentage = (yes_count / total_questions) * 100 if total_questions > 0 else 0
-        
-        # Find all animals in the tree first
-        tree_animals = set(self.get_all_animals())
-        
-        # Find the animal with closest percentage match
-        best_animal = None
-        best_diff = float('inf')
-        
-        for animal in animals:
-            animal_name = animal.get('name')
-            animal_percentage = animal.get('yes_percentage', 50)
-            
-            # Only consider animals that are already in the tree
-            # (to maintain game progression)
-            if animal_name not in tree_animals:
-                continue
-            
-            # Calculate difference from actual percentage
-            diff = abs(yes_percentage - animal_percentage)
-            
-            # Pick the closest match
-            if diff < best_diff:
-                best_diff = diff
-                best_animal = animal_name
-        
-        return best_animal
     
     def learn_new_animal(self, new_animal: str, discriminating_question: str, 
                         answer_for_new: bool) -> bool:
@@ -411,7 +344,104 @@ class BinaryTree:
             self.root = question_node
         
         self.current_node = question_node
+        
+        # Update the animals database with this new animal
+        self._update_animal_in_database(new_animal)
+        
         return True
+    
+    def update_animal_success(self, animal: str, was_correct: bool):
+        """
+        Update an animal's success rate in the database to improve future predictions
+        
+        Args:
+            animal: The animal that was guessed or corrected
+            was_correct: Whether the guess was correct
+        """
+        import json
+        import os
+        
+        animals_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'animals.json')
+        
+        if not os.path.exists(animals_path):
+            return
+        
+        try:
+            with open(animals_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                animals = data.get('animals', [])
+            
+            # Calculate the yes percentage from this game
+            if self.game_history:
+                yes_count = sum(1 for _, answer in self.game_history if answer)
+                total = len(self.game_history)
+                path_percentage = (yes_count / total) * 100
+                
+                # Find and update the animal
+                found = False
+                for animal_data in animals:
+                    if animal_data.get('name') == animal:
+                        found = True
+                        # Adjust the percentage slightly toward the actual path if correct
+                        if was_correct:
+                            current_pct = animal_data.get('yes_percentage', 50)
+                            # Move 10% toward the actual percentage
+                            new_pct = current_pct * 0.9 + path_percentage * 0.1
+                            animal_data['yes_percentage'] = round(new_pct, 1)
+                        break
+                
+                # If animal not in database and guess was correct, add it
+                if not found and was_correct:
+                    animals.append({
+                        'name': animal,
+                        'yes_percentage': round(path_percentage, 1)
+                    })
+                
+                # Save back to file
+                data['animals'] = animals
+                with open(animals_path, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
+                    
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error updating animal database: {e}")
+    
+    def _update_animal_in_database(self, animal: str):
+        """Add a newly learned animal to the database with current path percentage"""
+        if not self.game_history:
+            return
+        
+        yes_count = sum(1 for _, answer in self.game_history if answer)
+        total = len(self.game_history)
+        path_percentage = (yes_count / total) * 100
+        
+        import json
+        import os
+        
+        animals_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'animals.json')
+        
+        try:
+            if os.path.exists(animals_path):
+                with open(animals_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+            else:
+                data = {'animals': []}
+            
+            animals = data.get('animals', [])
+            
+            # Check if animal already exists
+            exists = any(a.get('name') == animal for a in animals)
+            if not exists:
+                animals.append({
+                    'name': animal,
+                    'yes_percentage': round(path_percentage, 1)
+                })
+                
+                data['animals'] = animals
+                with open(animals_path, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, ensure_ascii=False, indent=2)
+                    
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error adding animal to database: {e}")
     
     def get_tree_height(self) -> int:
         """

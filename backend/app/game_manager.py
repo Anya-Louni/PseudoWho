@@ -83,12 +83,24 @@ class GameManager:
         answer_bool = answer.lower() in ['yes', 'oui', 'o', 'y', '1', 'true']
         self.current_session.questions_asked += 1
         
+        print(f"\n=== DEBUG: Process Answer ===", flush=True)
+        print(f"Question asked: {self.tree.get_current_question()}", flush=True)
+        print(f"Answer: {answer} ({answer_bool})", flush=True)
+        
         reached_leaf = self.tree.answer_question(answer_bool)
+        
+        current_q = self.tree.get_current_question()
+        guess = self.tree.get_guess() if reached_leaf else None
+        
+        print(f"Reached leaf: {reached_leaf}", flush=True)
+        print(f"Current node is_leaf: {self.tree.current_node.is_leaf if self.tree.current_node else 'None'}", flush=True)
+        print(f"Current question/guess: {current_q if not reached_leaf else guess}", flush=True)
+        print(f"=== END DEBUG ===\n", flush=True)
         
         return {
             'reached_leaf': reached_leaf,
-            'current_question': self.tree.get_current_question(),
-            'animal_guessed': self.tree.get_guess() if reached_leaf else None,
+            'current_question': current_q,
+            'animal_guessed': guess,
             'questions_asked': self.current_session.questions_asked
         }
     
@@ -101,9 +113,18 @@ class GameManager:
             actual_animal: The actual animal (if guess was wrong)
         """
         self.current_session.guessed_correctly = was_correct
-        if not was_correct:
+        guessed_animal = self.tree.get_guess()
+        
+        if was_correct:
+            # Update database: this animal's percentage should match this path
+            self.tree.update_animal_success(guessed_animal, True)
+            self.current_session.animal_guessed = guessed_animal
+        else:
+            # Update database: the actual animal should be learned
             self.current_session.animal_actual = actual_animal
-            self.current_session.animal_guessed = self.tree.get_guess()
+            self.current_session.animal_guessed = guessed_animal
+            if actual_animal:
+                self.tree.update_animal_success(actual_animal, True)
     
     def teach_new_animal(self, new_animal: str, discriminating_question: str,
                         answer_for_new: str) -> bool:

@@ -67,6 +67,8 @@ def process_answer():
         data = request.get_json()
         answer = data.get('answer', '').strip().lower()
         
+        print(f"\n>>> API RECEIVED ANSWER: '{answer}' <<<", flush=True)
+        
         if answer not in ['yes', 'no', 'oui', 'non', 'y', 'n', 'o']:
             return jsonify({
                 'success': False,
